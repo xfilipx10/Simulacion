@@ -6,11 +6,15 @@ class ruteadorA:
 
 	def __init__(self):
 
-		self.llamadasA = 0
-		self.llamadaDesviada = 0
-		self.llamadasRuteadasA = 0
-		self.colaA = []
-		self.ocupadoA = False
+		self.llamadasA = 0							# contador para las llamadas que entran a A
+		self.llamadaDesviada = 0					# contador para las llamadas que se van a desviar
+		self.llamadasRuteadasA = 0					# contador para las llamadas que A logre rutear
+		self.colaA = []								# cola de llamadas en A
+		self.tiempoLlamadasSistema = []				# lista que va a tener el timepo en el sistema de cada llamada
+		self.tiempoLlamadasCola = []				# lista que va a tener el tiempo en cola de cada llamada
+		self.ocupadoA = False						# estado del ruteador
+
+	# hay que programar todos los calculos de los tiempos y estadísticas
 
 	def generarTiempoServicio(self):
 		
@@ -18,11 +22,11 @@ class ruteadorA:
 
 	def generarTiempoDesvio(self):
 		
-		return 0
+		return 1/2
 
 	def generarTiempoArribo(self):
 		
-		return 0
+		return 2/3
                 
 	def generarEstadisticas(self):
 		
@@ -38,7 +42,13 @@ class ruteadorA:
 
 			self.ocupadoA = True
 			tiempoServicio = self.generarTiempoServicio()
-			eventos["E4"] = reloj + tiempoServicio
+			
+			#eventos["E4"] = reloj + tiempoServicio
+			
+			eventoCuatro = eventos["E4"]
+			eventoCuatro[0] = reloj + tiempoServicio
+			eventoCuatro[1] = llamada
+
 			self.llamadasA += 1
 
 		else:
@@ -67,6 +77,54 @@ class ruteadorA:
 			# buscar siguiente minimo
 			return False, reloj
 
+	def salidaLlamada(self, reloj, tiempoMax):
+
+		# actualiza el reloj con el tiempo que se programó para este evento
+		# se programa el evento en infinito
+
+		eventoCuatro = eventos["E4"]
+		reloj += eventoCuatro[0]
+		eventoCuatro[0] = 1000000000
+
+		self.llamadasRuteadasA += 1
+		self.ocupadoA = False
+
+		# se saca la llamada que se le asignó a este evento
+		# luego se establece el tiempo cuando sale del sistema
+		# se coloca el tiempo en nuestra lista de tiempos
+		# lo mismo para el tiempo en cola
+
+		llamada = eventoCuatro[1]
+
+		llamada.setSalidaSistema(reloj)
+		tiempoLlamadaSistema = llamada.obtenerTiempoEnSistema()
+		self.tiempoLlamadasSistema.append(tiempoLlamadaSistema)
+
+		tiempoLlamadaCola = llamada.obtenerTiempoEnCola()
+		self.tiempoLlamadasCola.append(tiempoLlamadaCola)
+
+		# esta parte me tiene confundido porque la profe había dicho que hay que revisar la cola
+		# y si hay algo hay que atenderlo, pero no sé si eso significaba hacer el tiempo de atencion aqui
+		# o llamar al evento de atender llamada
+
+		if len(self.colaA) > 0:
+
+			llamada = self.colaA.pop(0)
+			llamada.setSalidaCola(reloj)
+			self.atenderLlamada(reloj, llamada, tiempoMax)
+
+
+		if reloj >= tiempoMax:
+			
+			self.generarEstadisticas()
+			return True, reloj
+						
+		else: 
+			
+			# buscar siguiente minimo
+			return False, reloj
+
+		
 
 class ruteadorB:
 
@@ -77,6 +135,8 @@ class ruteadorB:
 		self.llamadasPerdidas = 0
 		self.colaB = []
 		self.ocupadoB = False
+
+	# hay que programar todos los calculos de los tiempos y estadísticas
 
 	def generarTiempoServicio(self):
 
@@ -180,6 +240,8 @@ class ruteadorB:
 
 				self.colaB.append(llamada)
 
+		# creo que este evento no hay que programarlo
+
 		tiempoArribo = 0.5
 		eventos["E2"] = reloj + tiempoArribo
 
@@ -240,14 +302,21 @@ class llamada:
 		
 		self.salidaCola = salida
 		
+# -----------------
+# Hash para los eventos, aquí se establecen sus tiempos y se saca el mínimo para ver que evento sigue
+# -----------------
 
 eventos = {
     "E1": 0,
     "E2": 0,
     "E3": 1000000000,
-    "E4": 1000000000,
-    "E5": 1000000000
+    "E4": [1000000000, ],
+    "E5": [1000000000, ]
 }
+
+# -----------------
+# Método para obtener el mínimo evento
+# -----------------
 
 def obtenerEventoMinimo():
 		
@@ -289,10 +358,14 @@ def main():
 				llamadaObj = llamada()
 				terminaCorrida, reloj = ruteA.atenderLlamada(reloj,  llamadaObj, maximoSimulacion)
 
-			if evento == "E2":
+			elif evento == "E2":
 
 				llamadaObj = llamada()
 				terminaCorrida, reloj = ruteB.atenderLlamada(reloj,  llamadaObj, maximoSimulacion)
+
+			elif evento == "E4":
+
+				terminaCorrida, reloj = ruteA.salidaLlamada(reloj, maximoSimulacion)				
 
 			if terminaCorrida:
 
