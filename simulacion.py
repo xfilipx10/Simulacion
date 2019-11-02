@@ -278,7 +278,7 @@ def main():
 		ruteA = ruteadorA()
 		ruteB = ruteadorB()
 		reloj = 0
-		terminaSimulacion = False
+		terminaCorrida = False
 
 		while True:
 
@@ -287,14 +287,14 @@ def main():
 			if evento == "E1":
 
 				llamadaObj = llamada()
-				terminaSimulacion, reloj = ruteA.atenderLlamada(reloj,  llamadaObj, maximoSimulacion)
+				terminaCorrida, reloj = ruteA.atenderLlamada(reloj,  llamadaObj, maximoSimulacion)
 
 			if evento == "E2":
 
 				llamadaObj = llamada()
-				terminaSimulacion, reloj = ruteB.atenderLlamada(reloj,  llamadaObj, maximoSimulacion)
+				terminaCorrida, reloj = ruteB.atenderLlamada(reloj,  llamadaObj, maximoSimulacion)
 
-			if terminaSimulacion:
+			if terminaCorrida:
 
 				break
 
