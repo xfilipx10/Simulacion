@@ -75,7 +75,7 @@ class ruteadorB:
 		self.llamadasB = 0
 		self.llamadasRuteadasB = 0
 		self.llamadasPerdidas = 0
-		self.colaB = 0
+		self.colaB = []
 		self.ocupadoB = False
 
 	def generarTiempoServicio(self):
@@ -111,19 +111,19 @@ class ruteadorB:
 
 		else:
 
-			if self.colaB > 4:
+			if len(self.colaB) > 4:
 
-				self.colaB += 1
+				self.colaB.append(llamada)
 				perdida = random.randint(0, 99)
 
 				if perdida <= 10:
 
-					self.colaB -= 1
+					self.colaB.pop()
 					self.llamadasPerdidas += 1
 
 			else:
 
-				self.colaB += 1
+				self.colaB.append(llamada)
 
 		tiempoArribo = self.generarTiempoArribo()
 		eventos["E2"] = reloj + tiempoArribo
@@ -162,23 +162,23 @@ class ruteadorB:
 
 			if llamada.tipoLlamada == 2:
 
-				if self.colaB > 4:
+				if len(self.colaB) > 4:
 
-					self.colaB += 1
+					self.colaB.append(llamada)
 					perdida = random.randint(0, 99)
 
 					if perdida <= 10:
 
-						self.colaB -= 1
+						self.colaB.pop()
 						self.llamadasPerdidas += 1
 
 				else:
 
-					self.colaB += 1
+					self.colaB.append(llamada)
 
 			else:
 
-				self.colaB += 1
+				self.colaB.append(llamada)
 
 		tiempoArribo = 0.5
 		eventos["E2"] = reloj + tiempoArribo
