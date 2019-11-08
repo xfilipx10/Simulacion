@@ -43,7 +43,8 @@ class ruteadorA:
 			i += 1
 
 		i = 1 
-		print ("------------------------------")
+
+		print ("")
 
 		for tiempo in self.tiempoLlamadasCola:
 
@@ -58,8 +59,8 @@ class ruteadorA:
 		print ("Llamadas recibidas en A: " + str(self.llamadasA))
 		print ("Llamadas ruteadas en A: " + str(self.llamadasRuteadasA))
 		print ("Llamadas enviadas de A a B: " + str(self.llamadaDesviada))
-		print ("Hay " + str(len(self.colaA)) + " llamadas en la cola A")
-		print ("------------------------------")
+		print ("Llamadas en cola A: " + str(len(self.colaA)))
+		print ("")
 
 	def atenderLlamada(self, reloj, llamada, tiempoMax):
 
@@ -200,8 +201,9 @@ class ruteadorB:
 			print ("Tiempo en sistema llamada " + str(i) + " = " + str(tiempo))
 			i += 1
 
-		i = 1 
-		print ("------------------------------")
+		i = 1
+
+		print ("")
 
 		for tiempo in self.tiempoLlamadasCola:
 
@@ -216,7 +218,8 @@ class ruteadorB:
 		print ("Llamadas recibidas en B: " + str(self.llamadasB))
 		print ("Llamadas ruteadas en B: " + str(self.llamadasRuteadasB))
 		print ("Llamadas perdidas en B: " + str(self.llamadasPerdidas))
-		print ("------------------------------")
+		print ("Llamadas en cola B: " + str(len(self.colaB)))
+		print ("")
 
 	def atenderLlamada(self, reloj, llamada, tiempoMax):
 
@@ -540,8 +543,13 @@ def main():
 				
 				time.sleep(2)
 
+			print ("Reloj actual del sistema: " + str(reloj))
+			print ("Evento que se va a procesar: " + evento + "\n")
+
 			ruteA.imprimirRuteadorA()
 			ruteB.imprimirRuteadorB()
+
+			print ("------------------------------")
 
 		numeroCorridas -= 1
 
