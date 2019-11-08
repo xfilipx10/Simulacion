@@ -19,11 +19,11 @@ class ruteadorA:
 
 	def generarTiempoServicioTipoUno(self):
 		
-		return 1/3									# pruebas
+		return 2									# pruebas
 
 	def generarTiempoServicioTipoDos(self):
 		
-		return 1/3									# pruebas
+		return 2									# pruebas
 
 	def generarTiempoDesvio(self):
 		
@@ -31,7 +31,7 @@ class ruteadorA:
 
 	def generarTiempoArribo(self):
 		
-		return 2/3									# pruebas
+		return 0.001									# pruebas
                 
 	def generarEstadisticas(self):
 		
@@ -58,6 +58,7 @@ class ruteadorA:
 		print ("Llamadas recibidas en A: " + str(self.llamadasA))
 		print ("Llamadas ruteadas en A: " + str(self.llamadasRuteadasA))
 		print ("Llamadas enviadas de A a B: " + str(self.llamadaDesviada))
+		print ("Hay " + str(len(self.colaA)) + " llamadas en la cola A")
 		print ("------------------------------")
 
 	def atenderLlamada(self, reloj, llamada, tiempoMax):
@@ -180,15 +181,15 @@ class ruteadorB:
 
 	def generarTiempoServicioTipoUno(self):
 
-		return 1/3										# pruebas
+		return 2										# pruebas
 
 	def generarTiempoServicioTipoDos(self):
 
-		return 1/3										# pruebas
+		return 2									# pruebas
 
 	def generarTiempoArribo(self):
 
-		return 2/3										# pruebas
+		return 0.001										# pruebas
 
 	def generarEstadisticas(self):
 		
@@ -271,7 +272,7 @@ class ruteadorB:
 		tiempos = eventos["E3"]
 		reloj += min(tiempos)
 
-		for num in range(tiempos):
+		for num in range(len(tiempos)):
 
 			if tiempos[num] == min(tiempos):
 
@@ -537,7 +538,7 @@ def main():
 
 			if delay == "si":
 				
-				time.sleep(4)
+				time.sleep(2)
 
 			ruteA.imprimirRuteadorA()
 			ruteB.imprimirRuteadorB()
