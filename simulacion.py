@@ -56,6 +56,11 @@ class ruteadorA:
 
 	def imprimirRuteadorA(self):
 
+		if self.ocupadoA:
+			print ("Estado ruteador A: ocupado")
+		else:
+			print ("Estado ruteador A: libre")
+
 		print ("Llamadas recibidas en A: " + str(self.llamadasA))
 		print ("Llamadas ruteadas en A: " + str(self.llamadasRuteadasA))
 		print ("Llamadas enviadas de A a B: " + str(self.llamadaDesviada))
@@ -214,6 +219,11 @@ class ruteadorB:
 		return 0
 
 	def imprimirRuteadorB(self):
+
+		if self.ocupadoB:
+			print ("Estado ruteador B: ocupado")
+		else:
+			print ("Estado ruteador B: libre")
 
 		print ("Llamadas recibidas en B: " + str(self.llamadasB))
 		print ("Llamadas ruteadas en B: " + str(self.llamadasRuteadasB))
