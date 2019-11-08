@@ -31,10 +31,16 @@ class ruteadorA:
 
 	def generarTiempoArribo(self):
 		
-		return 0.001									# pruebas
+		return 0.001								# pruebas
+
+	def getLlamadasRuteadas(self):
+
+		return self.llamadasRuteadasA
                 
 	def generarEstadisticas(self):
-		
+
+		print ("Estadísticas de A")
+
 		i = 1
 
 		for tiempo in self.tiempoLlamadasSistema:
@@ -197,8 +203,10 @@ class ruteadorB:
 
 		return 0.001										# pruebas
 
-	def generarEstadisticas(self):
+	def generarEstadisticas(self, totalRuteadaA):
 		
+		print ("Estadísticas de B")
+
 		i = 1
 
 		for tiempo in self.tiempoLlamadasSistema:
@@ -214,6 +222,9 @@ class ruteadorB:
 
 			print ("Tiempo en cola llamada " + str(i) + " = " + str(tiempo))
 			i += 1
+
+		porcentajePerdidas = self.llamadasPerdidas / (self.llamadasRuteadasB + totalRuteadaA)
+		print ("Porcentaje de llamadas perdidas: " + str(porcentajePerdidas))
 
 		print ("------------------------------")
 		return 0
@@ -294,6 +305,7 @@ class ruteadorB:
 
 		llamada.setEntradaSistema(reloj)
 		llamada.generarTipoLlamada()
+		llamada.meDesviaron = True
 
 		self.llamadasB += 1
 
@@ -371,7 +383,7 @@ class ruteadorB:
 
 		tiempoLlamadaCola = llamada.obtenerTiempoEnCola()
 
-		if llamada.mePerdi == True:
+		if llamada.meDesviaron == True:
 
 			tiempoLlamadaCola += 0.5
 
@@ -421,6 +433,7 @@ class llamada:
 		self.salidaCola = 0
 		self.tipoLlamada = 0
 		self.mePerdi = False
+		self.meDesviaron = False
 		
 	def generarTipoLlamada(self):
 		
@@ -546,7 +559,8 @@ def main():
 			if terminaCorrida:
 
 				ruteA.generarEstadisticas()
-				ruteB.generarEstadisticas()
+				ruteB.generarEstadisticas(ruteA.getLlamadasRuteadas())
+
 				break
 
 			if delay == "si":
