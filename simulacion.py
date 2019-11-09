@@ -1,6 +1,8 @@
 import time
 import random
 import os
+import math
+import random
 
 class ruteadorA:
 
@@ -19,19 +21,30 @@ class ruteadorA:
 
 	def generarTiempoServicioTipoUno(self):
 		
-		return 2									# pruebas
+		return math.sqrt((500*random.random())+400)	
 
 	def generarTiempoServicioTipoDos(self):
 		
-		return 2									# pruebas
+		z = 0
+		for i in range(12):
+			z += random.random();
+		
+		z -= 6
+		
+		x = 1*z+15
+		
+		return x									
 
 	def generarTiempoDesvio(self):
 		
-		return 1/2									# pruebas
+		return 1/2									
 
 	def generarTiempoArribo(self):
 		
-		return 0.001								# pruebas
+		num = -math.log(1-random.random())
+		den = 2/3
+		
+		return num/den						# pruebas
 
 	def getLlamadasRuteadas(self):
 
@@ -193,15 +206,18 @@ class ruteadorB:
 
 	def generarTiempoServicioTipoUno(self):
 
-		return 2										# pruebas
+		num = -math.log(1-random.random())
+		den = 4/3
+		
+		return num/den											
 
 	def generarTiempoServicioTipoDos(self):
 
-		return 2									# pruebas
+		return 2									
 
 	def generarTiempoArribo(self):
 
-		return 0.001										# pruebas
+		return random.random()*(3-1)+1				
 
 	def generarEstadisticas(self, totalRuteadaA):
 		
