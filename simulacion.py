@@ -99,6 +99,9 @@ class ruteadorA:
 		tiempoPromCola = self.acumuladorColaA / (self.llamadasRuteadasA + totalRuteadaB)
 		print ("Tiempo promedio en cola de llamadas ruteadas por A: {:.2f}".format(tiempoPromCola))
 
+		eficiencia = tiempoPromCola / tiempoSis
+		print ("Eficiencia del sistema con las llamadas que llegaron a A: {:.2f}".format(eficiencia))
+
 		print ("------------------------------")
 		return 0
 
@@ -187,10 +190,6 @@ class ruteadorA:
 		self.tiempoLlamadasCola.append(tiempoLlamadaCola)
 		self.acumuladorColaA += tiempoLlamadaCola
 
-		# esta parte me tiene confundido porque la profe había dicho que hay que revisar la cola
-		# y si hay algo hay que atenderlo, pero no sé si eso significaba hacer el tiempo de atencion aqui
-		# o llamar al evento de atender llamada
-
 		if len(self.colaA) > 0:
 
 			llamada = self.colaA.pop(0)
@@ -234,11 +233,10 @@ class ruteadorB:
 		self.ocupadoB = False						# estado del ruteador
 		self.acumuladorColaB = 0					# acumulador del tiempo en cola de las llamadas que llegaron directo a B
 		self.acumuladorColaDesviadas = 0 			# acumulador del tiempo en cola de las llamadas desviadas
-		self.acumuladorTiempoSis = 0				# acumulador del tiempo en permanencia en el sistema
+		self.acumuladorTiempoSis = 0				# acumulador del tiempo en permanencia en el sistema de las que llegaron directas
+		self.acumuladorTiempoDes = 0				# acumulador del tiempo en permanencia en el sistema de las que llegaron desviadas
 		self.acumuladorTamanoColaB = 0 				# acumulador para el tamaño de la colaB con respecto al tiempo
 		self.ultimoCambioColaB = 0					# variable que va a tener el tiempo para el ultimo cambio que se hizo en la cola
-
-	# hay que programar todos los calculos de los tiempos y estadísticas
 
 	def generarTiempoServicioTipoUno(self):
 
@@ -310,13 +308,22 @@ class ruteadorB:
 		print ("Tamaño promedio de la cola en B: {:.2f}".format(tamPromCola))
 
 		tiempoSis = self.acumuladorTiempoSis / (self.llamadasRuteadasB + totalRuteadaA)
-		print ("Tiempo promedio de permanencia de una llamada en el sistema: {:.2f}".format(tiempoSis))
+		print ("Tiempo promedio de permanencia de las llamadas que llegaron a B: {:.2f}".format(tiempoSis))
+
+		tiempoSisDes = self.acumuladorTiempoDes / (self.llamadasRuteadasB + totalRuteadaA)
+		print ("Tiempo promedio de permanencia de las llamadas que llegaron de A a B: {:.2f}".format(tiempoSisDes))
 
 		tiempoPromColaB = self.acumuladorColaB / (self.llamadasRuteadasB + totalRuteadaA)
 		tiempoPromColaDes = self.acumuladorColaDesviadas / (self.llamadasRuteadasB + totalRuteadaA)
 
 		print ("Tiempo promedio en cola de llamadas que llegaron a B: {:.2f}".format(tiempoPromColaB))
 		print ("Tiempo promedio en cola de llamadas que llegaron desde A a B: {:.2f}".format(tiempoPromColaDes))
+
+		eficienciaB = tiempoPromColaB / tiempoSis
+		eficienciaAaB = tiempoPromColaDes / tiempoSisDes
+
+		print ("Eficiencia del sistema con las llamadas que llegaron a B: {:.2f}".format(eficienciaB))
+		print ("Eficiencia del sistema con las llamada que llegaron desde A a B: {:.2f}".format(eficienciaAaB))
 
 		porcentajePerdidas = self.llamadasPerdidas*100 / (self.llamadasRuteadasB + totalRuteadaA)
 		print ("Porcentaje de llamadas perdidas: {:.2f}%".format(porcentajePerdidas))
@@ -357,8 +364,6 @@ class ruteadorB:
 
 			if len(self.colaB) > 4:
 
-				llamada.setEntradaCola(reloj)
-
 				perdida = random.randint(0, 99)
 
 				if perdida <= 10:
@@ -366,16 +371,10 @@ class ruteadorB:
 					self.llamadasPerdidas += 1
 					llamada.mePerdi = True
 
-				self.colaB.append(llamada)
-				self.acumuladorTamanoColaB += len(self.colaB) * (reloj - self.ultimoCambioColaB)
-				self.ultimoCambioColaB = reloj
-
-			else:
-
-				llamada.setEntradaCola(reloj)
-				self.colaB.append(llamada)
-				self.acumuladorTamanoColaB += len(self.colaB) * (reloj - self.ultimoCambioColaB)
-				self.ultimoCambioColaB = reloj
+			llamada.setEntradaCola(reloj)
+			self.colaB.append(llamada)
+			self.acumuladorTamanoColaB += len(self.colaB) * (reloj - self.ultimoCambioColaB)
+			self.ultimoCambioColaB = reloj
 
 		tiempoArribo = self.generarTiempoArribo()
 		eventos["E2"] = reloj + tiempoArribo
@@ -482,7 +481,6 @@ class ruteadorB:
 		llamada.setSalidaSistema(reloj)
 		tiempoLlamadaSistema = llamada.obtenerTiempoEnSistema()
 		self.tiempoLlamadasSistema.append(tiempoLlamadaSistema)
-		self.acumuladorTiempoSis += tiempoLlamadaSistema
 
 		tiempoLlamadaCola = llamada.obtenerTiempoEnCola()
 
@@ -490,16 +488,14 @@ class ruteadorB:
 
 			tiempoLlamadaCola += 0.5
 			self.acumuladorColaDesviadas += tiempoLlamadaCola
+			self.acumuladorTiempoDes += tiempoLlamadaSistema
 
 		else:
 
 			self.acumuladorColaB += tiempoLlamadaCola
+			self.acumuladorTiempoSis += tiempoLlamadaSistema
 
 		self.tiempoLlamadasCola.append(tiempoLlamadaCola)
-
-		# esta parte me tiene confundido porque la profe había dicho que hay que revisar la cola
-		# y si hay algo hay que atenderlo, pero no sé si eso significaba hacer el tiempo de atencion aqui
-		# o llamar al evento de atender llamada
 
 		if len(self.colaB) > 0:
 
