@@ -30,9 +30,12 @@ class ruteadorA:
 		while True:
 
 			z = 0
+			i = 0
+
+			while i < 12:
 			
-			for i in range(12):
 				z += random.random()
+				i += 1
 		
 			z -= 6
 		
@@ -91,10 +94,10 @@ class ruteadorA:
 		'''
 
 		tiempoSis = self.acumuladorTiempoSis / (self.llamadasRuteadasA + totalRuteadaB)
-		print ("Tiempo promedio de permanencia de una llamada en el sistema: " + str(tiempoSis))
+		print ("Tiempo promedio de permanencia de una llamada en el sistema: {:.2f}".format(tiempoSis))
 
 		tiempoPromCola = self.acumuladorColaA / (self.llamadasRuteadasA + totalRuteadaB)
-		print ("Tiempo promedio en cola de llamadas ruteadas por A: " + str(tiempoPromCola))
+		print ("Tiempo promedio en cola de llamadas ruteadas por A: {:.2f}".format(tiempoPromCola))
 
 		print ("------------------------------")
 		return 0
@@ -239,6 +242,20 @@ class ruteadorB:
 
 	def generarTiempoServicioTipoUno(self):
 
+		r = random.random()
+
+		usarPrimeraFormula = 2*r
+		if usarPrimeraFormula <= 1:
+
+			return usarPrimeraFormula
+
+		else:
+
+			usarSegundaFormula = 3 - math.sqrt(8 - (8*r))
+			return usarSegundaFormula										
+
+	def generarTiempoServicioTipoDos(self):
+
 		r = 0
 
 		while True:
@@ -250,11 +267,7 @@ class ruteadorB:
 		num = -math.log(1-r)
 		den = 4/3
 		
-		return num/den											
-
-	def generarTiempoServicioTipoDos(self):
-
-		return 2									
+		return num/den										
 
 	def generarTiempoArribo(self):
 
@@ -262,7 +275,12 @@ class ruteadorB:
 
 	def getLlamadasRuteadas(self):
 
-		return self.llamadasRuteadasB	
+		return self.llamadasRuteadasB
+
+	def actualizarUltimoValorCola(self, reloj):
+
+		self.acumuladorTamanoColaB += len(self.colaB) * (reloj - self.ultimoCambioColaB)
+		self.ultimoCambioColaB = reloj
 
 	def generarEstadisticas(self, totalRuteadaA, reloj):
 		
@@ -289,19 +307,19 @@ class ruteadorB:
 		'''
 
 		tamPromCola = self.acumuladorTamanoColaB / reloj
-		print ("Tamaño promedio de la cola en B: " + str(tamPromCola))
+		print ("Tamaño promedio de la cola en B: {:.2f}".format(tamPromCola))
 
 		tiempoSis = self.acumuladorTiempoSis / (self.llamadasRuteadasB + totalRuteadaA)
-		print ("Tiempo promedio de permanencia de una llamada en el sistema: " + str(tiempoSis))
+		print ("Tiempo promedio de permanencia de una llamada en el sistema: {:.2f}".format(tiempoSis))
 
 		tiempoPromColaB = self.acumuladorColaB / (self.llamadasRuteadasB + totalRuteadaA)
 		tiempoPromColaDes = self.acumuladorColaDesviadas / (self.llamadasRuteadasB + totalRuteadaA)
 
-		print ("Tiempo promedio en cola de llamadas que llegaron a B: " + str(tiempoPromColaB))
-		print ("Tiempo promedio en cola de llamadas que llegaron desde A a B: " + str(tiempoPromColaDes))
+		print ("Tiempo promedio en cola de llamadas que llegaron a B: {:.2f}".format(tiempoPromColaB))
+		print ("Tiempo promedio en cola de llamadas que llegaron desde A a B: {:.2f}".format(tiempoPromColaDes))
 
 		porcentajePerdidas = self.llamadasPerdidas*100 / (self.llamadasRuteadasB + totalRuteadaA)
-		print ("Porcentaje de llamadas perdidas: " + str(porcentajePerdidas) + "%")
+		print ("Porcentaje de llamadas perdidas: {:.2f}%".format(porcentajePerdidas))
 
 		print ("------------------------------")
 		return 0
@@ -652,6 +670,7 @@ def main():
 			if terminaCorrida:
 
 				ruteA.generarEstadisticas(ruteB.getLlamadasRuteadas())
+				ruteB.actualizarUltimoValorCola(reloj)
 				ruteB.generarEstadisticas(ruteA.getLlamadasRuteadas(), reloj)
 
 				break
@@ -660,7 +679,7 @@ def main():
 				
 				time.sleep(2)
 
-			print ("Reloj actual del sistema: " + str(reloj))
+			print ("Reloj actual del sistema: {:.2f}".format(reloj))
 			print ("Evento que se va a procesar: " + evento + "\n")
 
 			ruteA.imprimirRuteadorA()
