@@ -676,7 +676,7 @@ def main():
 				time.sleep(2)
 
 			print ("Reloj actual del sistema: {:.2f}".format(reloj))
-			print ("Evento que se va a procesar: " + evento + "\n")
+			print ("Evento que se acaba de procesar: " + evento + "\n")
 
 			ruteA.imprimirRuteadorA()
 			ruteB.imprimirRuteadorB()
