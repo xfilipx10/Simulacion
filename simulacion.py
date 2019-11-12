@@ -79,7 +79,6 @@ class ruteadorA:
 
 		print ("Estadísticas de A")
 
-		'''
 
 		i = 1
 
@@ -97,19 +96,24 @@ class ruteadorA:
 			print ("Tiempo en cola llamada " + str(i) + " = " + str(tiempo))
 			i += 1
 
-		'''
+		if self.llamadasRuteadasA > 0:
 
-		tiempoSis = self.acumuladorTiempoSis / (self.llamadasRuteadasA)
-		print ("Tiempo promedio de permanencia de una llamada en el sistema: {:.2f}".format(tiempoSis))
+			tiempoSis = self.acumuladorTiempoSis / (self.llamadasRuteadasA)
+			print ("Tiempo promedio de permanencia de una llamada en el sistema: {:.2f}".format(tiempoSis))
 
-		tiempoPromCola = self.acumuladorColaA / (self.llamadasRuteadasA)
-		print ("Tiempo promedio en cola de llamadas ruteadas por A: {:.2f}".format(tiempoPromCola))
+			tiempoPromCola = self.acumuladorColaA / (self.llamadasRuteadasA)
+			print ("Tiempo promedio en cola de llamadas ruteadas por A: {:.2f}".format(tiempoPromCola))
 
-		eficiencia = tiempoPromCola / tiempoSis
-		print ("Eficiencia del sistema con las llamadas que llegaron a A: {:.2f}".format(eficiencia))
+			eficiencia = tiempoPromCola / tiempoSis
+			print ("Eficiencia del sistema con las llamadas que llegaron a A: {:.2f}".format(eficiencia))
 
+			print ("------------------------------")
+			return [tiempoSis, tiempoPromCola, eficiencia]
+		
+		print ("El ruteador A no ha ruteado ninguna llamada a la hora de terminar la simulación.")
 		print ("------------------------------")
-		return [tiempoSis, tiempoPromCola, eficiencia]
+		return [0,0,0]
+
 
 	def imprimirRuteadorA(self):
 
@@ -295,7 +299,6 @@ class ruteadorB:
 		
 		print ("Estadísticas de B")
 
-		'''
 
 		i = 1
 
@@ -313,34 +316,59 @@ class ruteadorB:
 			print ("Tiempo en cola llamada " + str(i) + " = " + str(tiempo))
 			i += 1
 
-		'''
+		tamPromCola = 0
+		tiempoSis = 0
+		tiempoSisDes = 0
+		tiempoPromColaB = 0
+		tiempoPromColaDes = 0
+		eficienciaB = 0
+		eficienciaAaB = 0
+		porcentajePerdidas = 0
 
-		tamPromCola = self.acumuladorTamanoColaB / reloj
-		print ("Tamaño promedio de la cola en B: {:.2f}".format(tamPromCola))
+		if self.llamadasRuteadasB > 0:
 
-		tiempoSis = self.acumuladorTiempoSis / (self.llamadasRuteadasDirectas)
-		print ("Tiempo promedio de permanencia de las llamadas que llegaron a B: {:.2f}".format(tiempoSis))
+			tamPromCola = self.acumuladorTamanoColaB / reloj
+			print ("Tamaño promedio de la cola en B: {:.2f}".format(tamPromCola))
 
-		tiempoSisDes = self.acumuladorTiempoDes / (self.llamadasRuteadasDesviadas)
-		print ("Tiempo promedio de permanencia de las llamadas que llegaron de A a B: {:.2f}".format(tiempoSisDes))
+			if self.llamadasRuteadasDirectas > 0:
 
-		tiempoPromColaB = self.acumuladorColaB / (self.llamadasRuteadasDirectas)
-		tiempoPromColaDes = self.acumuladorColaDesviadas / (self.llamadasRuteadasDesviadas)
+				tiempoSis = self.acumuladorTiempoSis / (self.llamadasRuteadasDirectas)
+				print ("Tiempo promedio de permanencia de las llamadas que llegaron a B: {:.2f}".format(tiempoSis))
 
-		print ("Tiempo promedio en cola de llamadas que llegaron a B: {:.2f}".format(tiempoPromColaB))
-		print ("Tiempo promedio en cola de llamadas que llegaron desde A a B: {:.2f}".format(tiempoPromColaDes))
+				tiempoPromColaB = self.acumuladorColaB / (self.llamadasRuteadasDirectas)
+				print ("Tiempo promedio en cola de llamadas que llegaron a B: {:.2f}".format(tiempoPromColaB))
 
-		eficienciaB = tiempoPromColaB / tiempoSis
-		eficienciaAaB = tiempoPromColaDes / tiempoSisDes
+				eficienciaB = tiempoPromColaB / tiempoSis
+				print ("Eficiencia del sistema con las llamadas que llegaron a B: {:.2f}".format(eficienciaB))
 
-		print ("Eficiencia del sistema con las llamadas que llegaron a B: {:.2f}".format(eficienciaB))
-		print ("Eficiencia del sistema con las llamada que llegaron desde A a B: {:.2f}".format(eficienciaAaB))
+			else:
 
-		porcentajePerdidas = self.llamadasPerdidas*100 / (self.llamadasRuteadasLocales + llamadaLocalA)
-		print ("Porcentaje de llamadas perdidas: {:.2f}%".format(porcentajePerdidas))
+				print ("El ruteador B no ha ruteado ninguna llamada directa a la hora de terminar la simulación.")
 
+			if self.llamadasRuteadasDesviadas > 0:
+
+				tiempoSisDes = self.acumuladorTiempoDes / (self.llamadasRuteadasDesviadas)
+				print ("Tiempo promedio de permanencia de las llamadas que llegaron de A a B: {:.2f}".format(tiempoSisDes))
+
+				tiempoPromColaDes = self.acumuladorColaDesviadas / (self.llamadasRuteadasDesviadas)
+				print ("Tiempo promedio en cola de llamadas que llegaron desde A a B: {:.2f}".format(tiempoPromColaDes))
+
+				eficienciaAaB = tiempoPromColaDes / tiempoSisDes
+				print ("Eficiencia del sistema con las llamada que llegaron desde A a B: {:.2f}".format(eficienciaAaB))
+
+			else:
+
+				print ("El ruteador B no ha ruteado ninguna llamada desviada a la hora de terminar la simulación.")
+
+			porcentajePerdidas = self.llamadasPerdidas*100 / (self.llamadasRuteadasLocales + llamadaLocalA)
+			print ("Porcentaje de llamadas perdidas: {:.2f}%".format(porcentajePerdidas))
+
+			print ("------------------------------")
+			return [tamPromCola, tiempoSis, tiempoSisDes, tiempoPromColaB, tiempoPromColaDes, eficienciaB, eficienciaAaB, porcentajePerdidas]
+
+		print ("El ruteador B no ha ruteado ninguna llamada a la hora de terminar la simulación.")
 		print ("------------------------------")
-		return [tamPromCola, tiempoSis, tiempoSisDes, tiempoPromColaB, tiempoPromColaDes, eficienciaB, eficienciaAaB, porcentajePerdidas]
+		return [0,0,0,0,0,0,0,0]
 
 	def imprimirRuteadorB(self):
 
