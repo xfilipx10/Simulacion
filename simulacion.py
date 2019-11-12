@@ -299,6 +299,7 @@ class ruteadorB:
 		
 		print ("Estadísticas de B")
 
+		'''
 
 		i = 1
 
@@ -315,6 +316,8 @@ class ruteadorB:
 
 			print ("Tiempo en cola llamada " + str(i) + " = " + str(tiempo))
 			i += 1
+
+		'''
 
 		tamPromCola = 0
 		tiempoSis = 0
@@ -781,16 +784,16 @@ def main():
 
 		if numeroCorridas > 0:
 
-			time.sleep(1)
+			time.sleep(5)
 			print ("La siguiente simulación está a punto de comenzar en 5 segundos.")
-			time.sleep(1)
+			time.sleep(5)
 
 		else:
 			
 			print ("A continuación se presentan los promedios de todas las corridas anteriores:\n")
-			time.sleep(1)
+			time.sleep(3)
 			imprimirPromedios(corridas)
-			time.sleep(1)
+			time.sleep(10)
 			
 		eventos["E1"] = 0
 		eventos["E2"] = 0
