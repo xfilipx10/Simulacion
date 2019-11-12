@@ -702,12 +702,14 @@ def imprimirPromedios(corridas):
 	print ("Eficiencia del sistema con las llamadas que llegaron a A: {:.2f}\n".format(eficienciaA/corridas))
 
 	print ("Estadísticas de B")
+	
 	print ("Tamaño promedio de la cola en B: {:.2f}".format(tamPromColaB/corridas))
 	print ("Tiempo promedio de permanencia de las llamadas que llegaron a B: {:.2f}".format(tiempoSisB/corridas))
-	print ("Tiempo promedio de permanencia de las llamadas que llegaron de A a B: {:.2f}".format(tiempoSisDes/corridas))
 	print ("Tiempo promedio en cola de llamadas que llegaron a B: {:.2f}".format(tiempoPromColaB/corridas))
-	print ("Tiempo promedio en cola de llamadas que llegaron desde A a B: {:.2f}".format(tiempoPromColaDes/corridas))
 	print ("Eficiencia del sistema con las llamadas que llegaron a B: {:.2f}".format(eficienciaB/corridas))
+
+	print ("Tiempo promedio de permanencia de las llamadas que llegaron de A a B: {:.2f}".format(tiempoSisDes/corridas))
+	print ("Tiempo promedio en cola de llamadas que llegaron desde A a B: {:.2f}".format(tiempoPromColaDes/corridas))
 	print ("Eficiencia del sistema con las llamada que llegaron desde A a B: {:.2f}".format(eficienciaAaB/corridas))
 	print ("Porcentaje de llamadas perdidas: {:.2f}%".format(porcentajePerdidas/corridas))
 
