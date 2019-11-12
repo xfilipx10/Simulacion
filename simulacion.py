@@ -79,6 +79,7 @@ class ruteadorA:
 
 		print ("Estadísticas de A")
 
+		'''
 
 		i = 1
 
@@ -95,6 +96,8 @@ class ruteadorA:
 
 			print ("Tiempo en cola llamada " + str(i) + " = " + str(tiempo))
 			i += 1
+
+		'''
 
 		if self.llamadasRuteadasA > 0:
 
